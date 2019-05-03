@@ -1,0 +1,26 @@
+    
+<!doctype html>
+<html>
+    <head>
+        <Style>
+                .error {color: red}
+                th {
+                    text-align: Left;
+                } 
+        </Style>
+        <title>{{ title }}</title>
+    </head>
+<body>
+    <p><a href="/blog">MY DIARY</a>  - - -  
+         <a href="/newpost">NEW POST</a> - - -  
+          <a href="/login">LOGIN</a>     - - -  
+          <a href="/logout">LOGOUT</a>     - - -  
+          <a href="/register">REGISTER</a>
+    </p>
+
+   
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
