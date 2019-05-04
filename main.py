@@ -1,9 +1,10 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, flash
+import cgi
 from flask_sqlalchemy import SQLAlchemy 
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:blog-LC101!@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:Blogz4LC101@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True 
 db = SQLAlchemy(app)
 
@@ -19,8 +20,73 @@ class Blog(db.Model):
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
-    return redirect('/blog')
+    #return render_template('index.html')
+    return redirect('/signup')
 
+@app.route("/signup", methods=['GET', 'POST'])
+
+
+def signup():
+
+    if request.method == 'GET':
+        return render_template('signup.html', title = "Blogz New User")
+
+    if request.method =='POST':
+        username = request.form['username']
+        password = request.form['password']
+        verify = request.form['verify']
+        email = request.form['email']
+        
+        un_error = ''
+        pw_error = ''
+        verify_error = ''
+        email_fail = ''
+
+    if len(username) < 3 or len(username) > 20:
+        un_error = "Oopsies!  Please enter a valid username."
+        username = ''
+    elif ' ' in username:
+        un_error = "Remove spaces from your username!"
+        username = ''
+      
+            
+    if len(password) == 0:
+        pw_error = 'You need to add a password.'
+
+
+    elif len(password) < 3 or len(password) > 20:
+        pw_error = 'Please enter a valid password'
+
+
+    if verify != password:
+        verify_error = 'These passwords do not match. Make them the same, and write them down somewhere so you do not forget'
+
+
+    if len(email) > 0:
+        if not is_email(email):
+            email_fail = 'Rut-Roh... ' + email + ' might not be a "REAL" email address!'
+            email = ''
+
+    if not (un_error or
+            pw_error or
+            verify_error or
+            email_fail):
+        #return render_template('blog.html', username=username)
+        return redirect('/blog')
+    else:
+        return render_template('signup.html', username=username, email=email, un_error=un_error, pw_error=pw_error, verify_error=verify_error, email_fail=email_fail)
+        
+
+def is_email(string):
+
+    atsign_index = string.find('@')
+    atsign_present = atsign_index >= 0
+    if not atsign_present:
+        return False
+    else:
+        domain_dot_index = string.find('.', atsign_index)
+        domain_dot_present = domain_dot_index >= 0
+        return domain_dot_present
 
 
 @app.route("/blog", methods=['POST', 'GET'])
@@ -65,8 +131,19 @@ def newpost():
         return redirect('/')
 
    
+@app.route("/login", methods=['POST', 'GET'])
+def login():
+    error = ''
+    if request.method == 'GET':
+        return render_template('login.html', title = "Login to Blogz")
+
     
-    
+@app.route("/logout", methods=['POST', 'GET'])
+def logout():
+    error = ''
+    if request.method == 'GET':
+        return render_template('login.html', title = "Buh-Bye!")
+
 if __name__ == '__main__':
     app.run()
 
