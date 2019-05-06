@@ -11,14 +11,23 @@
         <title>{{ title }}</title>
     </head>
 <body>
-    <p><a href="/blog">MY DIARY</a>  - - -  
-         <a href="/newpost">NEW POST</a> - - -  
-          <a href="/login">LOGIN</a>     - - -  
-          <a href="/logout">LOGOUT</a>     - - -  
-          <a href="/signup">REGISTER</a>
+    <p style="text-align: center;"><a href="/login">LOGIN</a>     - - - 
+        <a href="/signup">REGISTER</a>     - - - 
+        <a href="/blog?id={{id}}"> MY DIARY</a> - - -  
+        <a href="/blog">ALL BLOG ENTRIES</a>  - - -  
+        <a href="/newpost">NEW POST</a> - - -            
+        <a href="/logout">LOGOUT</a>           
     </p>
+    <p style="text-align: right;"> Current User: {{ email }}</p>
 
-   
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        <ul>
+        {% for category,message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endwith %}
+        
     {% block content %}
     {% endblock %}
 

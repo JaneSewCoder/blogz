@@ -1,15 +1,13 @@
 {% extends "base.html" %}
+
 {% block content %}
-
-
         <h1>SignUp:</h1>
-        <form action="/signup" method="post">
+        <form  method="post">
             <table>
-
                 <tr>
                     <th>Name:</th>
-                    <th><input type="text" name="username" value='{{ username }}'></th>
-                    <th><span class="error">{{ un_error }}</span></th>
+                    <th><input type="text" name="name" value='{{ name }}'></th>
+                    <th><span class="error">{{ name_error }}</span></th>
                 </tr>
                 <tr>
                     <th>Email:</th>
