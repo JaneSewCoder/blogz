@@ -40,7 +40,7 @@ class User(db.Model):
 def require_login():
 #    if 'email' not in session:
 #        redirect('/login')
-    allowed_routes = ['login', 'signup']
+    allowed_routes = ['login', 'signup', 'blog']
     if request.endpoint not in allowed_routes and 'email' not in session:
         return redirect('/login')
 
@@ -203,7 +203,7 @@ def logout():
 
     if 'email' in session:
         del session['email']
-    return redirect('/login')
+    return redirect('/blog')
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
