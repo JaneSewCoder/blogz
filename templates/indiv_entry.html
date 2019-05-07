@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Here is the entry you picked:</h1>
+    <h1>Here is the entry you created:</h1>
     <p>Return to list of entries <a href="/blog">here</a></p>
     
     <form method="POST">
@@ -10,9 +10,9 @@
 
     <hr/>
         
-        <h1>{{blog.title}} </h1>
-        <br>
-        <br>
+        <h2>{{blog.title}} </h2>
+       
         <p>{{blog.body}}</p>
+        <p><a href="/blog?userid={{ user.id }}">{{ user.name }}</a></p>
         
 {% endblock %}

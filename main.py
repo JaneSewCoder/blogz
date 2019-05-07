@@ -96,8 +96,9 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['email'] = email
+            flash('Logged In')
             # return redirect('/blog?id=' + str(new_user.name))
-            return render_template('singleuser.html', email=email)
+            return render_template('singleuser.html', email=email, user=new_user)
         else: 
             flash('Duplicate User Attempt, please login!', 'error')
 
@@ -126,7 +127,9 @@ def login():
             session['email'] = email
             flash("Logged in")
             print(session)
-            return render_template('singleuser.html', email=email)
+            blogs = Blog.query.filter_by(author_id = user.id).all()
+            
+            return render_template('singleuser.html', email=email, user=user, blogs=blogs)
         else:
             flash('User password incorrect, or user does not exist', 'error')
 
@@ -139,15 +142,27 @@ def login():
 
 @app.route("/blog", methods=['POST', 'GET'])
 def blog():
-    
-    if request.args.get('id'):
+    users = User.query.all()
+    if request.args.get('id') != None:
         blog_id =  request.args.get('id')
         blog = Blog.query.filter_by(id = blog_id).first()
-        return render_template('indiv_entry.html', title = "Read a Single entry", blog=blog)            
+        print(blog.author_id)
+        print("Individual Route")
+
+        user = User.query.filter_by(id = blog.author_id).first()
+        return render_template('indiv_entry.html', title = "Read a Single entry", blog=blog, user = user)            
+   
+    elif request.args.get("userid") != None:
+        owner_id =  request.args.get('userid')
+        blogs = Blog.query.filter_by(author_id = owner_id).all()
+        return render_template('blog.html', title = 'Blogs by specific owner', blogs=blogs, users=users)
+
+        
 
     else:
         blogs = Blog.query.all()
-        return render_template('blog.html', title = "Read Whatcha Wrote", blogs=blogs)
+        users = User.query.all()
+        return render_template('blog.html', title = "Read Whatcha Wrote", blogs=blogs, users=users)
         
         
 
@@ -156,15 +171,16 @@ def newpost():
     error = ''
     author = User.query.filter_by(email=session['email']).first()
     if request.method == 'GET':
-        return render_template('newpost.html', title = "Add more memories!")
+        return render_template('newpost.html', title = "Add more memories!", user=author)
 
     if request.method == 'POST':
         post_title = request.form['blog_title']
         post_body = request.form['blog_body']
+        
 
         if len(post_title) == 0 or len(post_body) == 0:
             error = "Make sure title and body are filled in."
-            return render_template('newpost.html', title = "Add more memories!", error=error)
+            return render_template('newpost.html', title = "Add more memories!", error=error, user=author)
         else:
             new_entry = Blog(post_title, post_body, author)
             db.session.add(new_entry)
@@ -192,7 +208,7 @@ def logout():
 @app.route("/", methods=['POST', 'GET'])
 def index():
     author = User.query.filter_by(email=session['email']).first()
-
+    users = User.query.all()
     if request.method == 'POST':
         post_title = request.form['blog_title']
         post_body = request.form['blog_body']
@@ -202,7 +218,7 @@ def index():
         db.session.commit()
     
     blogs = Blog.query.filter_by(author=author).all()
-    return render_template('blog.html', title = "All my Blogz", blogs=blogs)
+    return render_template('index.html', title = "All my Blogz", blogs=blogs, users=users)
 
     #return render_template('index.html')
     #return redirect('/login')

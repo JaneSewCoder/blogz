@@ -1,5 +1,6 @@
-<!doctype html>
-<html>
+{% extends "base.html" %}
+
+{% block content %}
     <head>
         <Style>
             .error {color: red}
@@ -14,9 +15,20 @@
         <title>Success & Welcome! </title>
     </head>
     <body>
-        <h1>Welcome {{ email }} !</h1>
+        <h1>Welcome {{ user.name }} !</h1>
         <form action="/blog">
             <input type="submit" value="Go to All Blogz">
         </form>
-    </body> 
-</html>
+  
+
+        
+        <a href="/blog?name={{ user.name }}"><h2>{{ user.name }}</h2></a>
+        
+        {% for blog in blogs %} 
+
+            <a href="/blog?id={{ blog.id }}"><h3>{{ blog.title }}</h3></a>
+
+        {% endfor %}
+
+    </body>
+{% endblock %}
